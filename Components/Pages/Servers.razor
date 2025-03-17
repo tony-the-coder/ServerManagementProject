@@ -10,18 +10,19 @@
     <div class="row w-50">
         @foreach (var city in cities)
         {
-        <div class="col">
+            <div class="col">
                 <div class="card">
-                    <img class="card-img-top" src="@($"/images/{city}.png")" alt="Card image cap">
                     <div class="card-body">
+                        <img class="card-img-top" src="@($"/images/{city}.png")" alt="Card image cap">
+
                         <button type="button" class="btn btn-primary">@city</button>
                     </div>
                 </div>
-           
+
             </div>
-            }
-   </div>
-  </div>
+        }
+    </div>
+</div>
 
 
 
@@ -38,17 +39,37 @@
                 @(server.IsOnline ? "online": "offline")
             </span> 
             &nbsp;
-             <a href="/servers/@server.Id" class="btn btn-link">Edit</a>
+            <a href="/servers/@server.Id" class="btn btn-link">Edit</a>
+            $nbsp;
+            @*We are using an explicit statement to call the function, but it will not work; should
+                have used a form
+                have used a form
+            *@
+            <button type="button" class="btn btn-primary" @onclick="@(() => { DeleteServer(server.Id); })">Delete</button>
         </li>
     }
-   
+
 </ul>
+
+<p>
+    <a href="/servers/add" class="btn btn-primary">Add Server</a>
+</p>
 
 @code {
 
 
     private List<Server> servers = ServersRepository.GetServersByCity("Toronto"); 
     private List<String> cities = CitiesRepository.GetCities();
+
+
+    private void DeleteServer(int id)
+    {
+        if (id > 0)
+        {
+            ServersRepository.DeleteServer(id);
+            servers = ServersRepository.GetServersByCity("Toronto");
+        }
+    }
 
 
 }

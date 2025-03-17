@@ -1,0 +1,78 @@
+﻿@page "/servers/add"
+@inject NavigationManager NavigationManager
+
+<h3>AddServer</h3>
+
+<br />
+<br />
+
+@*We need to create a new server and must bind the server to a server property.*@
+<EditForm Model="server" FormName="formServer" OnValidSubmit="Submit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+    <ValidationSummary></ValidationSummary>
+   
+    <div class="row mb-3">
+        <div class="col-2">
+            <label class="col-form-label">Name</label>
+        </div>
+        <div class="col-6">
+            <InputText @bind-Value="server.Name" class="form-control"></InputText>
+            <div class="col">
+                @*The ValidationMessage here goes to the server.Name field*@
+                <ValidationMessage For="() => server.Name">
+
+                </ValidationMessage>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-2">
+            <label class="col-form-label">City</label>
+        </div>
+        <div class="col-6">
+            <InputText @bind-Value="server.City" class="form-control"></InputText>
+            <div class="col">
+                @*The ValidationMessage here goes to the server.Name field*@
+                <ValidationMessage For="() => server.City">
+
+                </ValidationMessage>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row mb-3">
+        <div class="col-2">
+            <label class="col-form-label">Online</label>
+        </div>
+        <div class="col-6">
+            <InputCheckbox @bind-Value="server.IsOnline" class="form-check-input"></InputCheckbox>
+        </div>
+    </div>
+    <br />
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    &nbsp;
+    <a href="/servers" class="btn btn-primary">Close</a>
+    <ValidationSummary></ValidationSummary>
+</EditForm>
+
+
+@code {
+
+    //The SupplyParameterFromForm attribute is used to bind the data from the form to the server object
+    [SupplyParameterFromForm]
+    //We need to create the server object to be able to use it in the form and to bind the data
+    private Server server { get; set; } = new Server() { IsOnline = false };
+
+    private void Submit()
+    {
+        if (server != null)
+        {
+            ServersRepository.AddServer(server);
+            NavigationManager.NavigateTo("/servers");
+        }
+    }
+}
