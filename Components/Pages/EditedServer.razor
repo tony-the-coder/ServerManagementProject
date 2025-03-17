@@ -1,5 +1,7 @@
 ﻿@page "/servers/{id:int}"
 
+@inject NavigationManager NavigationManager
+
 <h3>Edited Server</h3>
 
 <br />
@@ -12,8 +14,11 @@
 {
     //The date context is very important for data to display properly
     //FormName is a parameter
-    <EditForm Model="server" FormName="formServer" OnSubmit="Submit">
-
+    //We are using OnValidSubmit to confirm that the data meets the required items
+    //from Server.cs
+    <EditForm Model="server" FormName="formServer" OnValidSubmit="Submit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
         <InputNumber @bind-Value="server.Id" hidden></InputNumber>
 
 
@@ -23,6 +28,12 @@
             </div>
             <div class="col-6">
                 <InputText @bind-Value="server.Name" class="form-control"></InputText>
+                <div class="col">
+                    @*The ValidationMessage here goes to the server.Name field*@
+                    <ValidationMessage For="() => server.Name">
+
+                    </ValidationMessage>
+                </div>
             </div>
         </div>
 
@@ -32,7 +43,14 @@
             </div>
             <div class="col-6">
                 <InputText @bind-Value="server.City" class="form-control"></InputText>
+                <div class="col">
+                    @*The ValidationMessage here goes to the server.Name field*@
+                    <ValidationMessage For="() => server.City">
+
+                    </ValidationMessage>
+                </div>
             </div>
+           
         </div>
 
 
@@ -49,6 +67,7 @@
         <button type="submit" class="btn btn-primary">Update</button>
         &nbsp;
         <a href="/servers" class="btn btn-primary">Close</a>
+        <ValidationSummary></ValidationSummary>
     </EditForm>
 }
 
@@ -81,5 +100,10 @@
         {
             ServersRepository.UpdateServer(server.Id, server);
         }
+        //NavigationManager is used to navigate to the servers page in this instance
+
+        NavigationManager.NavigateTo("/servers");
+
+
     }
 }
