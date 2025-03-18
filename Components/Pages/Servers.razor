@@ -1,5 +1,5 @@
 ﻿@page "/servers"
-
+@inject NavigationManager NavigationManager
 
 <h3>Servers</h3>
 
@@ -24,10 +24,6 @@
     </div>
 </div>
 
-
-
-
-
 <br />
 <br />
 <ul>
@@ -40,12 +36,20 @@
             </span> 
             &nbsp;
             <a href="/servers/@server.Id" class="btn btn-link">Edit</a>
-            $nbsp;
-            @*We are using an explicit statement to call the function, but it will not work; should
-                have used a form
-                have used a form
+            &nbsp;
+            @*
+            Using a form does a POST which is better for security compared to an anchor
+            which stores the data in the history like a GET. The page will refresh due to the line
+            in the code block. It does not seem truly interactive. 
             *@
-            <button type="button" class="btn btn-primary" @onclick="@(() => { DeleteServer(server.Id); })">Delete</button>
+
+            <EditForm
+            Model = "server" 
+            FormName="@($"form-server-{server.Id}")"
+            OnValidSubmit="@(()=> { DeleteServer(server.Id); })">
+                <button type="submit" class="btn btn-primary">Delete</button>
+
+            </EditForm>
         </li>
     }
 
@@ -67,7 +71,9 @@
         if (id > 0)
         {
             ServersRepository.DeleteServer(id);
-            servers = ServersRepository.GetServersByCity("Toronto");
+            // servers = ServersRepository.GetServersByCity("Toronto");
+            // NavigationManager.Refresh();
+            NavigationManager.NavigateTo("/servers");   
         }
     }
 
