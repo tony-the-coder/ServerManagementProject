@@ -36,11 +36,16 @@
 <br />
 
 
-@*Preparing a search field to search for different servers*@
+@*Preparing a search field to search for different servers.
+    As a reminder, there is a difference between @bind-Value and @bind-value. The former is used for
+    a two-way binding. The latter is used for a one-way binding. The former is used for input fields I believe on the 
+    EditForm component and the latter is used for output fields. 
+*@
 
 <div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Search Servers" aria-label="Search" 
-    aria-describedby="button-addon2" @onchange="HandleServerFilterChanged">
+    <input type="text" class="form-control" placeholder="Search Servers" 
+    @bind-value="serverFilter"
+           @bind-value:event="oninput" />
     <button class="btn btn-outline-secondary" type="button" id="button-search" @onclick="HandleSearch">Search</button>
 </div>
 @*Testing function by displaying the item that was being search for.*@
@@ -89,7 +94,23 @@
 
     private string selectedCity = "Toronto";
 
-    private string serverFilter = "";
+    //We need to set a private property to store the search filter.
+    private string _serverFilter = "";
+
+
+
+    private string serverFilter { get=>_serverFilter; 
+        set
+        { 
+            _serverFilter = value;
+            //We need to set the servers to the search results as a user types and it is bound to the input field with
+            // @bind-value:event="oninput"
+
+            this.servers = ServersRepository.SearchServers(_serverFilter);
+
+
+        }
+             } 
 
     private void DeleteServer(int id)
     {
@@ -110,11 +131,7 @@
     }
 
 
-    private void HandleServerFilterChanged(ChangeEventArgs args)
-    {
-        serverFilter = args.Value?.ToString() ?? string.Empty;
-        // this.servers = ServersRepository.GetServersByCity(this.selectedCity, filter);
-    }
+ 
 
     private void HandleSearch()
     {
