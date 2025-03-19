@@ -45,7 +45,7 @@
 <div class="input-group mb-3">
     <input type="text" class="form-control" placeholder="Search Servers" 
     @bind-value="serverFilter"
-           @bind-value:event="oninput" />
+    @bind-value:event="oninput" />
     <button class="btn btn-outline-secondary" type="button" id="button-search" @onclick="HandleSearch">Search</button>
 </div>
 @*Testing function by displaying the item that was being search for.*@
@@ -53,13 +53,25 @@
 
 <br />
 <ul>
-    @foreach(var server in servers)
-    {
+
+
+    @* Virtualization has requirements to be used: has to be used with a loop, and the loop has to be a list (at least that
+        is the way it seems), the item height is the same, there must be many items in the list. 
+        It is used to improve performance. We have to remove the foreach loop. 
+        It will only render the items that are visible on the screen and not render all the items until the 
+        user scrolls down.
+
+
+    *@
+    @* @foreach(var server in servers) *@
+    @* { *@
         @* 
             The key attribute is used to identify the item in the list, and allows Blazor to track the item in the list
             The way it is currently instanciated there will not be duplicate items in the list.
             We are using the server.Id and there can only be one item with the same server.Id*@
 
+
+    <Virtualize Items="this.servers" Context="server"> 
         <li @key="server.Id">
             @server.Name in @server.City is
             <span style="color: @((@server.IsOnline ? "green": "red"))">
@@ -69,6 +81,7 @@
             <a href="/servers/@server.Id" class="btn btn-link">Edit</a>
             &nbsp;
             @*
+
             Using a form does a POST which is better for security compared to an anchor
             which stores the data in the history like a GET. The page will refresh due to the line
             in the code block. It does not seem truly interactive. 
@@ -82,21 +95,21 @@
 
             </EditForm>
         </li>
-    }
-
+    @* } *@
+    </Virtualize>
 </ul>
 
 <p>
     <a href="/servers/add" class="btn btn-primary">Add Server</a>
 </p>
 
-<p> 
-<button class="btn btn-secondary" 
-@onclick="@(() => {this.servers.Insert(0, new Server {Name = "ServerA", City = "Toronto"} );
- })"> 
-Add Server 2
- </button> 
-</p> 
+@* <p>  *@
+@*     <button class="btn btn-secondary"  *@
+@*     @onclick="@(() => {this.servers.Insert(0, new Server {Name = "ServerA", City = "Toronto"} ); *@
+@*  })">  *@
+@*         Add Server 2 *@
+@*     </button>  *@
+@* </p>  *@
 
 
 
@@ -127,7 +140,7 @@ Add Server 2
 
 
         }
-             } 
+    } 
 
     private void DeleteServer(int id)
     {
@@ -144,7 +157,18 @@ Add Server 2
     private void SelectCity(string cityName)
     {
         this.selectedCity = cityName;
+
         this.servers = ServersRepository.GetServersByCity(this.selectedCity);
+
+        // The code below was to generate a lot of servers to test the virtualization feature.
+        // if (cityName == "Halifax")
+        // {
+        //     for (int i = 16; i < 2000; i++)
+        //     {
+        //         servers.Add(new Server { Id = i, Name = $"Server{i}", City = "Halifax"});
+        //     }
+        // }
+
     }
 
 
