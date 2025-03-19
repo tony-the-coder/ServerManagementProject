@@ -1,4 +1,7 @@
 ﻿@page "/servers/add"
+
+@rendermode InteractiveServer
+
 @inject NavigationManager NavigationManager
 
 <h3>AddServer</h3>
@@ -7,6 +10,8 @@
 <br />
 
 @*We need to create a new server and must bind the server to a server property.*@
+@*The SupplyParameterFromForm attribute is used to bind the data from the form to the server object*@
+@*When making a form interactive, the FormName is not required, but it can still exist (I never realized this)*@
 <EditForm Model="server" FormName="formServer" OnValidSubmit="Submit">
     <DataAnnotationsValidator></DataAnnotationsValidator>
     <ValidationSummary></ValidationSummary>
@@ -63,6 +68,9 @@
 @code {
 
     //The SupplyParameterFromForm attribute is used to bind the data from the form to the server object
+    //We need to create the server object to be able to use it in the form and to bind the data
+    //Having interactivity, we would not need the SupplyParameterFromForm attribute.
+
     [SupplyParameterFromForm]
     //We need to create the server object to be able to use it in the form and to bind the data
     private Server server { get; set; } = new Server() { IsOnline = false };
