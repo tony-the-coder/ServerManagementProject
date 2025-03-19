@@ -14,7 +14,8 @@
         @foreach (var city in cities)
         {
             <div class="col">
-                <div class="card">
+                @*We use the ternary operator to determine if the city is selected. If it is, we add a border to the card. *@
+                <div class="card @(selectedCity.Equals(city, StringComparison.OrdinalIgnoreCase)?"border-primary":"")">
                     <div class="card-body">
                         <img class="card-img-top" src="@($"/images/{city}.png")" alt="Card image cap">
                         @*We use explicit syntax by creating the function to get the city names to display
@@ -35,9 +36,6 @@
 <br />
 
 
-<ServerComponent @rendermode="InteractiveServer"></ServerComponent>
-
-<br />
 <ul>
     @foreach(var server in servers)
     {
