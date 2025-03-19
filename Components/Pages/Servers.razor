@@ -36,6 +36,17 @@
 <br />
 
 
+@*Preparing a search field to search for different servers*@
+
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Search Servers" aria-label="Search" 
+    aria-describedby="button-addon2" @onchange="HandleServerFilterChanged">
+    <button class="btn btn-outline-secondary" type="button" id="button-search" @onclick="HandleSearch">Search</button>
+</div>
+@*Testing function by displaying the item that was being search for.*@
+@* @serverFilter *@
+
+<br />
 <ul>
     @foreach(var server in servers)
     {
@@ -78,6 +89,8 @@
 
     private string selectedCity = "Toronto";
 
+    private string serverFilter = "";
+
     private void DeleteServer(int id)
     {
         if (id > 0)
@@ -96,5 +109,18 @@
         this.servers = ServersRepository.GetServersByCity(this.selectedCity);
     }
 
+
+    private void HandleServerFilterChanged(ChangeEventArgs args)
+    {
+        serverFilter = args.Value?.ToString() ?? string.Empty;
+        // this.servers = ServersRepository.GetServersByCity(this.selectedCity, filter);
+    }
+
+    private void HandleSearch()
+    {
+        this.servers = ServersRepository.SearchServers(serverFilter);
+
+        this.selectedCity = string.Empty;
+    }
 
 }
