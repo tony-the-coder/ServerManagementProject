@@ -9,24 +9,8 @@
 <br />
 <br />
 
-<div class="container-fluid text-center">
-    <div class="row w-50">
-        @foreach (var city in cities)
-        {
-            <div class="col">
-                <div class="card @(selectedCity.Equals(city, StringComparison.OrdinalIgnoreCase)?"border-primary":"")">
-                    <div class="card-body">
-                        <img class="card-img-top" src="@($"/images/{city}.png")" alt="Card image cap">
 
-                        <button type="button" class="btn btn-primary" @onclick="@(() => {SelectCity(city); })">@city</button>
-                    </div>
-                </div>
-
-            </div>
-        }
-    </div>
-</div>
-
+<CityListComponent @rendermode="InteractiveServer"></CityListComponent>
 
 
 <br />
@@ -52,7 +36,7 @@
 
 
 <ServerListComponent @rendermode="InteractiveServer"
-                     CityName="@this.selectedCity">
+                     CityName="Toronto">
 </ServerListComponent>
 
 
@@ -65,13 +49,13 @@
 @code {
 
 
-    private List<Server> servers = ServersRepository.GetServersByCity("Toronto");
+    // private List<Server> servers = ServersRepository.GetServersByCity("Toronto");
 
-    private List<String> cities = CitiesRepository.GetCities();
+   
 
-    private string selectedCity = "Toronto";
+   
 
-    //We need to set a private property to store the search filter.
+  
     private string _serverFilter = "";
 
 
@@ -85,41 +69,34 @@
             //We need to set the servers to the search results as a user types and it is bound to the input field with
             // @bind-value:event="oninput"
 
-            this.servers = ServersRepository.SearchServers(_serverFilter);
+            // this.servers = ServersRepository.SearchServers(_serverFilter);
 
 
         }
     }
 
-    private void DeleteServer(int id)
-    {
-        if (id > 0)
-        {
-            ServersRepository.DeleteServer(id);
-            // servers = ServersRepository.GetServersByCity("Toronto");
-            // NavigationManager.Refresh();
-            NavigationManager.NavigateTo("/servers");
-        }
-    }
+    // private void DeleteServer(int id)
+    // {
+    //     if (id > 0)
+    //     {
+    //         ServersRepository.DeleteServer(id);
+    //         servers = ServersRepository.GetServersByCity("Toronto");
+    //         NavigationManager.Refresh();
+    //         NavigationManager.NavigateTo("/servers");
+    //     }
+    // }
 
 
-    private void SelectCity(string cityName)
-    {
-        this.selectedCity = cityName;
-
-        this.servers = ServersRepository.GetServersByCity(this.selectedCity);
-
-      
-    }
+  
 
 
 
 
     private void HandleSearch()
     {
-        this.servers = ServersRepository.SearchServers(serverFilter);
+        // this.servers = ServersRepository.SearchServers(serverFilter);
 
-        this.selectedCity = string.Empty;
+        // this.selectedCity = string.Empty;
     }
 
 }
