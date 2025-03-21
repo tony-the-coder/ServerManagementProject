@@ -19,9 +19,12 @@
     public string city { get; set; } = "";
 
 
+    [Parameter]
+    public EventCallback<string> SelectCityCallBack { get; set; }
+
     private void SelectCity(string cityName)
     {
-        
+        SelectCityCallBack.InvokeAsync(cityName);
     }
 
 }

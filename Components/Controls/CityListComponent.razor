@@ -6,7 +6,8 @@
             {
           <CityComponent 
               city="@city" 
-              selectedCity="@selectedCity">
+              selectedCity="@selectedCity"
+              SelectCityCallBack="HandleCitySelection">
           </CityComponent>
             }
         </div>
@@ -15,17 +16,18 @@
 
 
 @code {
+    [Parameter]
+    public EventCallback<string> SelectCityCallBack { get; set; }
 
     private string selectedCity = "Toronto";
 
     private List<String> cities = CitiesRepository.GetCities();
 
-    private void SelectCity(string cityName)
+    private void HandleCitySelection(string cityName)
     {
-        this.selectedCity = cityName;
+        selectedCity = cityName;
 
-        // this.servers = ServersRepository.GetServersByCity(this.selectedCity);
-
+        SelectCityCallBack.InvokeAsync(cityName);
 
     }
 }
