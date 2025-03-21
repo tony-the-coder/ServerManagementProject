@@ -18,10 +18,7 @@
                 <div class="card @(selectedCity.Equals(city, StringComparison.OrdinalIgnoreCase)?"border-primary":"")">
                     <div class="card-body">
                         <img class="card-img-top" src="@($"/images/{city}.png")" alt="Card image cap">
-                        @*We use explicit syntax by creating the function to get the city names to display
-                            with the image. It is an EventHandler function. city is a string.
-                        *@
-                        <button type="button" class="btn btn-primary" @onclick="@(() => {SelectCity(city); })">@city</button>
+                      <button type="button" class="btn btn-primary" @onclick="@(() => {SelectCity(city); })">@city</button>
                     </div>
                 </div>
 
@@ -30,17 +27,9 @@
     </div>
 </div>
 
-@*Testing to ensure that the function is working properly and the interactivity works as it should. *@
-@* @selectedCity *@
-
 <br />
 
 
-@*Preparing a search field to search for different servers.
-    As a reminder, there is a difference between @bind-Value and @bind-value. The former is used for
-    a two-way binding. The latter is used for a one-way binding. The former is used for input fields I believe on the 
-    EditForm component and the latter is used for output fields. 
-*@
 
 <div class="input-group mb-3">
     <input type="text" class="form-control" placeholder="Search Servers" 
@@ -48,83 +37,26 @@
     @bind-value:event="oninput" />
     <button class="btn btn-outline-secondary" type="button" id="button-search" @onclick="HandleSearch">Search</button>
 </div>
-@*Testing function by displaying the item that was being search for.*@
-@* @serverFilter *@
 
 <br />
-<ul>
 
-
-    @* Virtualization has requirements to be used: has to be used with a loop, and the loop has to be a list (at least that
-        is the way it seems), the item height is the same, there must be many items in the list. 
-        It is used to improve performance. We have to remove the foreach loop. 
-        It will only render the items that are visible on the screen and not render all the items until the 
-        user scrolls down.
-
-
-    *@
-    @* @foreach(var server in servers) *@
-    @* { *@
-        @* 
-            The key attribute is used to identify the item in the list, and allows Blazor to track the item in the list
-            The way it is currently instanciated there will not be duplicate items in the list.
-            We are using the server.Id and there can only be one item with the same server.Id*@
-
-
-    <Virtualize Items="this.servers" Context="server"> 
-        <li @key="server.Id">
-            @server.Name in @server.City is
-            <span style="color: @((@server.IsOnline ? "green": "red"))">
-                @(server.IsOnline ? "online": "offline")
-            </span> 
-            &nbsp;
-            <a href="/servers/@server.Id" class="btn btn-link">Edit</a>
-            &nbsp;
-            @*
-
-            Using a form does a POST which is better for security compared to an anchor
-            which stores the data in the history like a GET. The page will refresh due to the line
-            in the code block. It does not seem truly interactive. 
-            *@
-
-            <EditForm
-            Model = "server" 
-            FormName="@($"form-server-{server.Id}")"
-            OnValidSubmit="@(()=> { DeleteServer(server.Id); })">
-                <button type="submit" class="btn btn-primary">Delete</button>
-
-            </EditForm>
-        </li>
-    @* } *@
-    </Virtualize>
-</ul>
-
+<ServerListComponent @rendermode="InteractiveServer"></ServerListComponent>
 <p>
     <a href="/servers/add" class="btn btn-primary">Add Server</a>
 </p>
-
-@* <p>  *@
-@*     <button class="btn btn-secondary"  *@
-@*     @onclick="@(() => {this.servers.Insert(0, new Server {Name = "ServerA", City = "Toronto"} ); *@
-@*  })">  *@
-@*         Add Server 2 *@
-@*     </button>  *@
-@* </p>  *@
-
-
 
 
 
 @code {
 
 
-    private List<Server> servers = ServersRepository.GetServersByCity("Toronto"); 
+  
 
     private List<String> cities = CitiesRepository.GetCities();
 
     private string selectedCity = "Toronto";
 
-    //We need to set a private property to store the search filter.
+    
     private string _serverFilter = "";
 
 
@@ -133,42 +65,21 @@
         set
         { 
             _serverFilter = value;
-            //We need to set the servers to the search results as a user types and it is bound to the input field with
-            // @bind-value:event="oninput"
-
-            this.servers = ServersRepository.SearchServers(_serverFilter);
+         // this.servers = ServersRepository.SearchServers(_serverFilter);
 
 
         }
     } 
 
-    private void DeleteServer(int id)
-    {
-        if (id > 0)
-        {
-            ServersRepository.DeleteServer(id);
-            // servers = ServersRepository.GetServersByCity("Toronto");
-            // NavigationManager.Refresh();
-            NavigationManager.NavigateTo("/servers");   
-        }
-    }
+   
 
 
     private void SelectCity(string cityName)
     {
         this.selectedCity = cityName;
 
-        this.servers = ServersRepository.GetServersByCity(this.selectedCity);
-
-        // The code below was to generate a lot of servers to test the virtualization feature.
-        // if (cityName == "Halifax")
-        // {
-        //     for (int i = 16; i < 2000; i++)
-        //     {
-        //         servers.Add(new Server { Id = i, Name = $"Server{i}", City = "Halifax"});
-        //     }
-        // }
-
+        // this.servers = ServersRepository.GetServersByCity(this.selectedCity);
+               
     }
 
 
@@ -176,7 +87,7 @@
 
     private void HandleSearch()
     {
-        this.servers = ServersRepository.SearchServers(serverFilter);
+        // this.servers = ServersRepository.SearchServers(serverFilter);
 
         this.selectedCity = string.Empty;
     }
