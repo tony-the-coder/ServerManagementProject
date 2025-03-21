@@ -4,12 +4,14 @@
 
     @if (this.servers != null && this.servers.Count > 0)
     {
-    <ul>
+<ul>
 
 
-        @* Virtualization will only render the items that are visible on the screen and not render all the items until the 
+    @* Virtualization will only render the items that are visible on the screen and not render all the items until the 
         user scrolls down.
 *@
+
+
     <Virtualize Items="this.servers" Context="server">
         <li @key="server.Id">
             @server.Name in @server.City is
@@ -19,9 +21,9 @@
             &nbsp;
             <a href="/servers/@server.Id" class="btn btn-link">Edit</a>
             &nbsp;
-            <EditForm Model="server"
-            FormName="@($"form-server-{server.Id}")"
-            OnValidSubmit="@(()=> { DeleteServer(server.Id); })">
+          <EditForm Model="server"
+                      FormName="@($"form-server-{server.Id}")"
+                      OnValidSubmit="@(()=> { DeleteServer(server.Id); })">
                 <button type="submit" class="btn btn-primary">Delete</button>
 
             </EditForm>
