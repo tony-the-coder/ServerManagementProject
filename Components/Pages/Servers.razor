@@ -46,7 +46,12 @@
     <input type="text" class="form-control" placeholder="Search Servers" 
     @bind-value="serverFilter"
     @bind-value:event="oninput" />
-    <button class="btn btn-outline-secondary" type="button" id="button-search" @onclick="HandleSearch">Search</button>
+    <button class="btn btn-outline-secondary" 
+    type="button" 
+    id="button-search" 
+    @onclick="HandleSearch">
+    Search
+</button>
 </div>
 @*Testing function by displaying the item that was being search for.*@
 @* @serverFilter *@
@@ -82,23 +87,10 @@
             &nbsp;
             @*
 
-            Using a form does a POST which is better for security compared to an anchor
-            which stores the data in the history like a GET. The page will refresh due to the line
-            in the code block. It does not seem truly interactive. 
-            *@
-
-            <EditForm
-            Model = "server" 
-            FormName="@($"form-server-{server.Id}")"
-            OnValidSubmit="@(()=> { DeleteServer(server.Id); })">
-                <button type="submit" class="btn btn-primary">Delete</button>
-
-            </EditForm>
-        </li>
-    @* } *@
-    </Virtualize>
-</ul>
-
+<ServerListComponent
+    @rendermode="InteractiveServer" 
+    CityName="@this.selectedCity">
+</ServerListComponent>
 <p>
     <a href="/servers/add" class="btn btn-primary">Add Server</a>
 </p>
