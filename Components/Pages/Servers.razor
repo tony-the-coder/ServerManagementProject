@@ -10,70 +10,30 @@
 <br />
 
 
-<CityListComponent @rendermode="InteractiveServer" SelectCityCallBack="HandleCitySelection"></CityListComponent>
+<CityListComponent 
+SelectCityCallBack="HandleCitySelection">
+</CityListComponent>
 
-
+<br />
+<SearchBarComponent 
+SearchServerCallBack="HandleSearchServer">
+</SearchBarComponent>
 <br />
 
 
-
-
-<div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Search Servers"
-           @bind-value="serverFilter"
-           @bind-value:event="oninput" />
-    <button class="btn btn-outline-secondary" type="button" id="button-search" @onclick="HandleSearch">Search</button>
-    <button class="btn btn-outline-secondary"
-            type="button"
-            id="button-search"
-            @onclick="HandleSearch">
-        Search
-    </button>
-</div>
-
-
-<br />
-
-
-<ServerListComponent 
-    @rendermode="InteractiveServer"
-    CityName="@this.selectedCity">
+<ServerListComponent @rendermode="InteractiveServer"
+CityName="@this.selectedCity"
+SearchFilter="@searchFilter">
 </ServerListComponent>
-
-
 
 <p>
     <a href="/servers/add" class="btn btn-primary">Add Server</a>
 </p>
 
-
 @code {
 
     private string selectedCity = "Toronto";
-    
-    private string _serverFilter = "";
-
-    private string serverFilter
-    {
-        get => _serverFilter;
-        set
-        {
-            _serverFilter = value;
-            //We need to set the servers to the search results as a user types and it is bound to the input field with
-            // @bind-value:event="oninput"
-
-            // this.servers = ServersRepository.SearchServers(_serverFilter);
-
-
-        }
-    }
-
-  
-
-  
-
-
-
+    private string searchFilter = "";
 
     private void HandleSearch()
     {
@@ -85,8 +45,14 @@
 
     private void HandleCitySelection(string cityName)
     {
-        // this.servers = ServersRepository.GetServersByCity(cityName);
+
         selectedCity = cityName;
+        this.searchFilter = string.Empty;
+    }
+
+    private void HandleSearchServer(string searchFilter)
+    {
+        this.searchFilter = searchFilter;
     }
 
 }
